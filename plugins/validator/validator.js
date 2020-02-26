@@ -17,6 +17,8 @@ class Validator{
         this.elementsForm.forEach(elem => elem.addEventListener('change', this.checkIt.bind(this))); // обязательно нужно bind иначе теряем контекст вызова
         this.setPattern();
         this.form.addEventListener('submit', event => {
+            this.elementsForm.forEach( elem => this.checkIt({target: elem}));
+
             if (this.error.size) { // если size размер коллекции >0 то делаем event.preventDefault();
                 event.preventDefault();
             }
@@ -37,17 +39,18 @@ class Validator{
                 return pattern.test(elem.value);
             }
         };
-        const method = this.method[elem.id]; // проверяем методы проверки
-        console.log('this.method: ', this.method[elem.id]);
-      
-        if (method) { // если методы существуют 
-           return method.every( item  => validatorMethod[item[0]](elem, this.pattern[item[1]]));
-            // {
-            // //    console.log('***',this.pattern[item[1]]);
-            // //    console.log(validatorMethod[item[0]](elem, this.pattern[item[1]]));
-            //    return validatorMethod[item[0]](elem, this.pattern[item[1]]);
-            // })
+
+        if (this.method) {
+            const method = this.method[elem.id]; // проверяем методы проверки
+            if (method) { // если методы существуют 
+                return method.every( item  => validatorMethod[item[0]](elem, this.pattern[item[1]]));
+                
+             } else {
+                 console.warn('необходимо передать id  и методы проверки для этих полей, валидация всегда true')
+             }
+
         }
+        
         return true;
     }
     // метод для проверки события change в input по патернам
@@ -56,6 +59,7 @@ class Validator{
 
         if ( this.isValid(target) ) {
             this.showSuccess(target);
+            this.error.remove(target);
 
             if (target.nextElementSibling.classList.contains('validator-error')) {
                 this.error.remove(target);
@@ -71,7 +75,7 @@ class Validator{
     showError(elem){
         elem.classList.remove('success'); // добавим класс success если валидации произошла
         elem.classList.add('error'); // добавим класс error если произошла ошибка валидации
-        if (elem.nextElementSibling.classList.contains('validator-error')) { // если у элемента справа есть класс 'validator-error' ничего не делаем
+        if (elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error')) { // если у элемента справа есть класс 'validator-error' ничего не делаем
             return
         }
         const errorDiv = document.createElement('div'); // добавим div для отображения под input текста ошибки
@@ -84,7 +88,7 @@ class Validator{
     showSuccess(elem){
         elem.classList.remove('error');
         elem.classList.add('success'); // добавим класс success если валидации произошла
-        if ( elem.nextElementSibling.classList.contains('validator-error') ){ // проверим есть ли class ==='validator-error' у элемента справа 
+        if (elem.nextElementSibling && elem.nextElementSibling.classList.contains('validator-error') ){ // проверим есть ли class ==='validator-error' у элемента справа 
         // nextElementSibling - элемент справа от текущего. 
             elem.nextElementSibling.remove(); // удаляем элемент справа
         }
@@ -110,7 +114,8 @@ class Validator{
     // задаем патерны по умолчанию для проверки
     setPattern(){
         if (!this.pattern.phone) {
-            this.pattern.phone = /^\+?[78]([-()*\d]){10}$/;
+            this.pattern.phone = /^((8|\+7)[\- ]?)?(\(?\d{3,4}\)?[\- ]?)?[\d\- ]{5,10}$/;
+            // this.pattern.phone = /^\+?[78]([-()*\d]){10}$/;
 
         }
         if (!this.pattern.email) {
