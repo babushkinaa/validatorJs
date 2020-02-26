@@ -34,9 +34,22 @@
     <script src="./plugins/validator/validator.js"></script>
     <script>
     const validator = new Validator({
-        selector: '#myform',
-        pattern: {},
-        method: {}
+        selector: '#myform', // что валидируем
+        pattern: { // паттерны проверки значений - регулярные выражения
+            // phone: /^\d+$/,
+            // email: /^\w+$/,
+            // zip: /^\d{6}/
+        },
+        method: {
+            'phone':[ // если ошибиться с id то будет возвращаться undefined
+                ['notEmpty'], // метод проверяющий что бы поле не было пустым
+                ['pattern', 'phone'] // ['pattern', 'какое поле проверяем'], пример ['pattern', 'phone'] - телефон, ['pattern', 'email'] - email, ['pattern', 'zip'] - почтовый индекс   
+            ],
+            'email':[
+                ['notEmpty'], // метод проверяющий что бы поле не было пустым
+                ['pattern', 'email'] // ['pattern', 'какое поле проверяем'], пример ['pattern', 'phone'] - телефон, ['pattern', 'email'] - email, ['pattern', 'zip'] - почтовый индекс   
+            ]
+        }
     });
     validator.init();
     </script>
