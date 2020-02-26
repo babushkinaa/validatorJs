@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    .myform {
+        display: block;
+    }
+    #phone {
+        display: block;
+    }
+    #email {
+        display: block;
+    }
+</style>
+<body>
+
+    <form id="myform" class="myform">
+        <label for="phone">phone</label>
+        <input type="text" name="phone" id="phone" placeholder ="phone">
+        <label for="email">email</label>
+        <input type="text" name="email" id="email" placeholder ="email">
+        <br>
+        <button type="submit">submit</button>
+        <button type="reset">reset</button>
+    </form>
+
+
+    
+    <script src="./plugins/validator/validator.js"></script>
+    <script>
+    const validator = new Validator({
+        selector: '#myform',
+        pattern: {},
+        method: {}
+    });
+    validator.init();
+    </script>
+</body>
+</html>
