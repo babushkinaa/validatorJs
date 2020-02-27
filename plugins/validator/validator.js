@@ -59,7 +59,7 @@ class Validator{
 
         if ( this.isValid(target) ) {
             this.showSuccess(target);
-            this.error.remove(target);
+            this.error.delete(target);
 
             if (target.nextElementSibling.classList.contains('validator-error')) {
                 this.error.remove(target);
